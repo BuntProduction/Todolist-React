@@ -71,7 +71,7 @@ const Todo = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
-                fill="currentColor"
+                fill="rgba(175,126,235, 0.6)"
                 class="bi bi-trash-fill"
                 viewBox="0 0 16 16"
               >
@@ -88,7 +88,7 @@ const Todo = () => {
         <input
           type="text"
           id="event"
-          placeholder="Something..."
+          placeholder="something..."
           name="event"
           value={user.event}
           onChange={handleChange}

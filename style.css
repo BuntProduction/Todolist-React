@@ -19,26 +19,29 @@
 }
 .boxEvent{
     margin: auto;
-    background-color: white;
     width: 30%;
     margin-bottom: 10px;
     margin-top: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 .box{
     width: 100%;
     margin: auto; 
-    margin-bottom: 2px; 
     display: flex;
     align-items: center;
     min-height: 40px;
     background-color: white;
     font-size: 15px;
     text-transform:lowercase;
+    transition: all 2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding-left: 5px;
+    padding-right: 5px;
 
 }
 .box:hover {
-    background-color: #ebe1f8;
+    background-color: rgb(234, 225, 255);
+    border-radius: 20px;
+    transform: scale(1.2);
 }
 .svg{
     width: 40px;
@@ -99,4 +102,10 @@
     border: 0px;
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 1s ease;
+}
+.clearButton:hover{
+    background-color: rgba(244, 237, 255, 0.1);
+    width: 15%;
+
 }
