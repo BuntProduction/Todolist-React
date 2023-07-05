@@ -16,6 +16,8 @@
   background-color: #af7eeb;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 10px 10px 0 0;
+  align-items: center;
+  text-align: center;
 }
 
 .title {
@@ -140,17 +142,14 @@
     .all {
       margin-top: 5%;
       align-items: center;
-      left: 0;
     }
   
     .titleBox,
     .form {
-      width: 80%;
       max-width: 300px;
     }
   
     .boxEvent {
-      width: 90%;
       max-width: 300px;
     }
     
