@@ -50,7 +50,7 @@
 }
 
 .box:hover {
-  background-color: rgb(231, 228, 239);
+  background-color: rgb(232, 230, 237);
   border-radius: 20px;
   transform: scale(1.2);
   -webkit-font-smoothing: subpixel-antialiased;
