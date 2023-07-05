@@ -44,18 +44,18 @@ const Todo = () => {
   };
 
   return (
-    <div class="all">
-      <div class="titleBox">
-      <h1 class="title">todolist</h1>
+    <div className="all">
+      <div className="titleBox">
+      <h1 className="title">todolist</h1>
       </div>
-      <div class="boxEvent">
+      <div className="boxEvent">
       {events.map((event, index) => ( // read the table with maps and get the index for each element
         <div 
-        class="box"
+        className="box"
         >
         <>
             <p
-            class="todoText"
+            className="todoText"
               key={index} //
               style={{
                 textDecoration: event.crossed ? "line-through" : "none",
@@ -66,13 +66,13 @@ const Todo = () => {
             >
               {event.text}
             </p>
-            <a onClick={() => removeElement(index)} style={{cursor: 'pointer'}} class="svg">
+            <a onClick={() => removeElement(index)} style={{cursor: 'pointer'}} className="svg">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
                 fill="rgba(175,126,235, 0.6)"
-                class="bi bi-trash-fill"
+                className="bi bi-trash-fill"
                 viewBox="0 0 16 16"
               >
                 <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
@@ -83,7 +83,7 @@ const Todo = () => {
       ))}
       </div>
 
-      <form onSubmit={handleSubmit} class="form">
+      <form onSubmit={handleSubmit} className="form">
         <label htmlFor="event"></label>
         <input
           type="text"
@@ -92,11 +92,11 @@ const Todo = () => {
           name="event"
           value={user.event}
           onChange={handleChange}
-          class="input"
+          className="input"
           
         />
         <button 
-          class="submit"
+          className="submit"
           type="submit" 
           
         >
@@ -105,7 +105,7 @@ const Todo = () => {
       </form>
 
       <div>
-      <button onClick={refresh} class="clearButton">Clear</button>
+      <button onClick={refresh} className="clearButton">Clear</button>
     </div>
     </div>
   );
