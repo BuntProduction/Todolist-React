@@ -39,7 +39,7 @@
 
 }
 .box:hover {
-    background-color: rgb(234, 225, 255);
+    background-color: rgb(231, 228, 239);
     border-radius: 20px;
     transform: scale(1.2);
 }
