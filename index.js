@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './style.css';
 
 const Todo = () => {
@@ -8,6 +8,19 @@ const Todo = () => {
 
   const [events, setEvents] = useState([]); // create the table 
 
+  //function to update the data in localstorage
+  const updateLocalStorage = (updatedEvents) => {
+    localStorage.setItem("events", JSON.stringify(updatedEvents));
+  };
+
+  useEffect(() => {
+    //get the data from localstorage
+    const storedEvents = localStorage.getItem("events");
+    if (storedEvents) {
+      setEvents(JSON.parse(storedEvents));
+    }
+  }, []);
+
   const handleChange = (event) => { //when we add smth with the button in the input
     const { name, value } = event.target;
     setUser((user) => ({ ...user, [name]: value }));
@@ -16,8 +29,10 @@ const Todo = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (user.event.length >= 3) {
-      setEvents([...events, { text: user.event, crossed: false }]); // if the event is > 3 -> add new object to the table  and initalize the crossed to false
+      const updatedEvents = [...events, { text: user.event, crossed: false }]; // create a table copy
+      setEvents(updatedEvents); // update the table
       setUser({ event: "" }); // put the value to nothing
+      updateLocalStorage(updatedEvents);
       console.log("success");
     } else {
       console.log("error");
@@ -31,16 +46,19 @@ const Todo = () => {
       crossed: !updatedEvents[index].crossed, // inverse the style
     };
     setEvents(updatedEvents); //update the tabke
+    updateLocalStorage(updatedEvents);//save the data
   };
 
-  //function to refresh the page
-  function refresh() {
-    window.location.reload(false);
+  //function to clear the page
+  function clearArray() {
+    setEvents([]);
+    localStorage.removeItem("events");
   }
   
   const removeElement = (index) => {
     const newEvents = events.filter((_, i) => i !== index); //_ is a not used parameter
     setEvents(newEvents);
+    updateLocalStorage(newEvents);//save with the datas
   };
 
   return (
@@ -105,7 +123,7 @@ const Todo = () => {
       </form>
 
       <div>
-      <button onClick={refresh} className="clearButton">Clear</button>
+      <button onClick={clearArray} className="clearButton">Clear</button>
     </div>
     </div>
   );
