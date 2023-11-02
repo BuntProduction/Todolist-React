@@ -1,91 +1,154 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
+import { Helmet } from "react-helmet";
+
 
 const Todo = () => {
   const [user, setUser] = useState({
     event: "",
   });
 
-  const [events, setEvents] = useState([]); // create the table 
+  const [shareUrl, setShareUrl] = useState('');
+  const [isShared, setIsShared] = useState(false);
 
-  //function to update the data in localstorage
+  const [events, setEvents] = useState([]);
+
   const updateLocalStorage = (updatedEvents) => {
     localStorage.setItem("events", JSON.stringify(updatedEvents));
   };
 
+  //this useEffect is when we mount the component
   useEffect(() => {
-    //get the data from localstorage
-    const storedEvents = localStorage.getItem("events");
-    if (storedEvents) {
-      setEvents(JSON.parse(storedEvents));
+    
+    const id = window.location.pathname.split("/")[1]; //extract the id from the url
+    if (id) {
+      fetch(`https://backend.geeknomad.fr/fetch.php?random_id=${id}`)
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setEvents(data);
+        } else {
+          console.error("Data is not an array:", data);
+        }
+      })
+      .catch(error => console.error("Fetch error:", error));
+    } else {
+      const storedEvents = localStorage.getItem("events");
+      if (storedEvents) {
+        setEvents(JSON.parse(storedEvents));
+      }
     }
   }, []);
+  
+  //this useEffect is to update the database
+  useEffect(() => {
+    
+    const id = window.location.pathname.split("/")[1]; //extract the id from thr url
+  
+    if (events.length > 0 && id) { //verify if have an event and an id
+      fetch('https://backend.geeknomad.fr/insert.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: events, id: id }) //send the id if available
+      })
+      .then(response => response.json())
+      .then(data => {
+      })
+      .catch(error => {
+        console.error("Erreur lors de la mise à jour de la base de données:", error);
+      });
+    }
+  }, [events]); // each time the events change it modifies
+  
 
-  const handleChange = (event) => { //when we add smth with the button in the input
+  const handleChange = (event) => {
     const { name, value } = event.target;
-    setUser((user) => ({ ...user, [name]: value }));
+    setUser({ ...user, [name]: value });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (user.event.length >= 3) {
-      const updatedEvents = [...events, { text: user.event, crossed: false }]; // create a table copy
-      setEvents(updatedEvents); // update the table
-      setUser({ event: "" }); // put the value to nothing
+      const updatedEvents = [...events, { text: user.event, crossed: false }];
+      setEvents(updatedEvents);
+      setUser({ event: "" });
       updateLocalStorage(updatedEvents);
-      console.log("success");
-    } else {
-      console.log("error");
     }
   };
 
   const handleClick = (index) => {
-    const updatedEvents = [...events]; // create a table copy
-    updatedEvents[index] = {
-      ...updatedEvents[index], // copy the object of the event
-      crossed: !updatedEvents[index].crossed, // inverse the style
-    };
-    setEvents(updatedEvents); //update the tabke
-    updateLocalStorage(updatedEvents);//save the data
+    const updatedEvents = [...events];
+    updatedEvents[index].crossed = !updatedEvents[index].crossed;
+    setEvents(updatedEvents);
+    updateLocalStorage(updatedEvents);
   };
 
-  //function to clear the page
-  function clearArray() {
+  const clearArray = () => {
     setEvents([]);
     localStorage.removeItem("events");
-  }
-  
+  };
+
   const removeElement = (index) => {
-    const newEvents = events.filter((_, i) => i !== index); //_ is a not used parameter
+    const newEvents = events.filter((_, i) => i !== index);
     setEvents(newEvents);
-    updateLocalStorage(newEvents);//save with the datas
+    updateLocalStorage(newEvents);
+  };
+
+  const shareTodoList = () => {
+    const id = window.location.pathname.split("/")[1]; // extract the ID from the URL
+
+    fetch('https://backend.geeknomad.fr/insert.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ data: events, id: id }) // send the id if available
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (!id) {
+        const newId = data.random_id;
+        window.history.pushState({}, '', `/${newId}`); // update the URL with the unique ID
+      }
+      setShareUrl(window.location.href);
+      setIsShared(true);
+    });
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert('URL copied to clipboard');
+    });
   };
 
   return (
     <div className="all">
+      <Helmet>
+        <meta name="description" lang="fr" content="Organisez votre vie avec notre application Todolist design. Créez, partagez et gérez vos tâches facilement." />
+        <meta name="description" lang="en" content="Organize your life with our aesthetic To Do List app. Create, share, and manage your tasks easily." />
+      </Helmet>
+
       <div className="titleBox">
-      <h1 className="title">todolist</h1>
+        <h1 className="title">todolist</h1>
       </div>
       <div className="boxEvent">
-      {events.map((event, index) => ( // read the table with maps and get the index for each element
-        <div 
-        className="box"
-        >
-        <>
+      {Array.isArray(events) ? events.map((event, index) => (
+          <div className="box" key={index}>
             <p
-            className="todoText"
-              key={index} //
+              className="todoText"
               style={{
                 textDecoration: event.crossed ? "line-through" : "none",
                 cursor: "pointer",
                 margin: 'auto',
-              }} // if event.crossed is true -> line-through else -> nothing
+              }}
               onClick={() => handleClick(index)}
             >
               {event.text}
             </p>
             <a onClick={() => removeElement(index)} style={{cursor: 'pointer'}} className="svg">
-              <svg
+            <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
@@ -96,11 +159,9 @@ const Todo = () => {
                 <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
               </svg>
             </a>
-          </>
-        </div>
-      ))}
+          </div>
+        )) : <p>No events to display</p>}
       </div>
-
       <form onSubmit={handleSubmit} className="form">
         <label htmlFor="event"></label>
         <input
@@ -111,23 +172,33 @@ const Todo = () => {
           value={user.event}
           onChange={handleChange}
           className="input"
-          
         />
-        <button 
-          className="submit"
-          type="submit" 
-          
-        >
-          <svg fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 30 30" width="30px" height="30px">    
-          <path d="M15,3C8.373,3,3,8.373,3,15c0,6.627,5.373,12,12,12s12-5.373,12-12C27,8.373,21.627,3,15,3z M21,16h-5v5 c0,0.553-0.448,1-1,1s-1-0.447-1-1v-5H9c-0.552,0-1-0.447-1-1s0.448-1,1-1h5V9c0-0.553,0.448-1,1-1s1,0.447,1,1v5h5 c0.552,0,1,0.447,1,1S21.552,16,21,16z"/></svg></button>
+        <button className="submit" type="submit">
+          {/* SVG code here */}
+        </button>
       </form>
-
       <div>
-      <button onClick={clearArray} className="clearButton">Clear</button>
-    </div>
+        <button onClick={clearArray} className="clearButton">clear</button>
+      </div>
+      <div className="shareContainer">
+        {/*To prevent the safari protection to avoid the copy with a button i have created an input witht the text to copy*/}
+        {isShared ? (
+          <button className="shareButton" onClick={copyToClipboard}>📋</button>
+        ) : (
+          <button className="shareButton" onClick={shareTodoList}>generate a link</button>
+        )}
+        <input 
+          type="text" 
+          readOnly 
+          className="shareInput"
+          value={shareUrl} 
+          onClick={copyToClipboard}
+          placeholder={isShared ? '' : 'link...'}
+        />
+        
+      </div>
     </div>
   );
 };
-
 
 export default Todo;

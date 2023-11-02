@@ -41,7 +41,7 @@
   background-color: white;
   font-size: 15px;
   text-transform: lowercase;
-  transition: all 0.5s ease;
+  transition: background-color 0.5s ease, border-radius 0.5s ease, transform 0.5s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding-left: 5px;
   padding-right: 5px;
@@ -51,16 +51,25 @@
 
 .box:hover {
   background-color: rgb(232, 230, 237);
-  border-radius: 20px;
+  border-radius: 45px;
   transform: scale(1.2);
   -webkit-font-smoothing: subpixel-antialiased;
   backface-visibility: hidden;
   z-index: 2;
-  
+  position: relative;
+}
+.box:hover .svg{
+  transition: all 0.5s ease;
+  width: 40px;
+  -webkit-transform: translateX(-45%);
+	transform: translateX(-45%);
 }
 
 .svg {
+  text-align: center;
   width: 40px;
+  transition: all 0.5s ease;
+
 }
 
 .todoText {
@@ -84,6 +93,7 @@
 }
 
 .input {
+  font-size: 15px;
   color: white;
   background-color: #af7eeb;
   border: none;
@@ -97,7 +107,6 @@
 .input::placeholder {
   color: white;
 }
-
 .submit {
   font-size: 40px;
   color: white;
@@ -106,6 +115,10 @@
   margin-left: 5px;
   border: none;
   background-color: transparent;
+  transition: all 0.5s ease;
+}
+.submit:hover{
+  opacity: 0.7;
 }
 
 .form {
@@ -139,6 +152,44 @@
   width: 130px;
 }
 
+.shareContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; 
+}
+
+.shareButton{
+  color: #af7eeb;
+  margin-top: 10px;
+  width: 150px;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 20px;
+  border: 0px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: rgb(255, 255, 255);
+  transition: all 1s ease;
+}
+.shareButton:hover{
+  width: 180px;
+}
+
+.shareInput {
+  width: 100%;
+  padding: 6px 10px;
+  margin-top: 10px;
+  margin-bottom: 2px;
+  box-sizing: border-box;
+  border: 2px solid #af7eeb;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 12px;
+}
+
+
+
 @media (max-width: 668px) {
     .all {
       margin-top: 8%;
@@ -152,6 +203,9 @@
   
     .boxEvent {
       max-width: 300px;
+    }
+    .submit{
+      padding-left: 10px;
     }
     
   }
